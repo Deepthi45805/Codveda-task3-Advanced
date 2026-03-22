@@ -1,0 +1,183 @@
+import java.util.Scanner;
+
+// Tree Node class
+class TreeNode {
+    int data;
+    TreeNode left, right;
+
+    public TreeNode(int data) {
+        this.data = data;
+        left = right = null;
+    }
+}
+
+// BST class
+class BST {
+    TreeNode root;
+
+    // Insert node
+    public TreeNode insert(TreeNode root, int data) {
+        if (root == null) {
+            return new TreeNode(data);
+        }
+
+        if (data < root.data) {
+            root.left = insert(root.left, data);
+        } else if (data > root.data) {
+            root.right = insert(root.right, data);
+        }
+
+        return root;
+    }
+
+    // Search node
+    public boolean search(TreeNode root, int key) {
+        if (root == null) return false;
+
+        if (key == root.data) return true;
+        else if (key < root.data)
+            return search(root.left, key);
+        else
+            return search(root.right, key);
+    }
+
+    // Find minimum value (used in delete)
+    public int minValue(TreeNode root) {
+        while (root.left != null) {
+            root = root.left;
+        }
+        return root.data;
+    }
+
+    // Delete node
+    public TreeNode delete(TreeNode root, int key) {
+        if (root == null) return null;
+
+        if (key < root.data) {
+            root.left = delete(root.left, key);
+        } else if (key > root.data) {
+            root.right = delete(root.right, key);
+        } else {
+            // Node found
+
+            // Case 1: no child
+            if (root.left == null && root.right == null) {
+                return null;
+            }
+
+            // Case 2: one child
+            else if (root.left == null) {
+                return root.right;
+            } else if (root.right == null) {
+                return root.left;
+            }
+
+            // Case 3: two children
+            int minVal = minValue(root.right);
+            root.data = minVal;
+            root.right = delete(root.right, minVal);
+        }
+        return root;
+    }
+
+    // In-order traversal
+    public void inorder(TreeNode root) {
+        if (root != null) {
+            inorder(root.left);
+            System.out.print(root.data + " ");
+            inorder(root.right);
+        }
+    }
+
+    // Pre-order traversal
+    public void preorder(TreeNode root) {
+        if (root != null) {
+            System.out.print(root.data + " ");
+            preorder(root.left);
+            preorder(root.right);
+        }
+    }
+
+    // Post-order traversal
+    public void postorder(TreeNode root) {
+        if (root != null) {
+            postorder(root.left);
+            postorder(root.right);
+            System.out.print(root.data + " ");
+        }
+    }
+}
+
+// Main class
+public class Main {
+    public static void main(String[] args) {
+        BST tree = new BST();
+        Scanner sc = new Scanner(System.in);
+        int choice, value;
+
+        do {
+            System.out.println("\n--- BST Menu ---");
+            System.out.println("1. Insert");
+            System.out.println("2. Delete");
+            System.out.println("3. Search");
+            System.out.println("4. Inorder Traversal");
+            System.out.println("5. Preorder Traversal");
+            System.out.println("6. Postorder Traversal");
+            System.out.println("7. Exit");
+            System.out.print("Enter choice: ");
+
+            choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter value: ");
+                    value = sc.nextInt();
+                    tree.root = tree.insert(tree.root, value);
+                    break;
+
+                case 2:
+                    System.out.print("Enter value to delete: ");
+                    value = sc.nextInt();
+                    tree.root = tree.delete(tree.root, value);
+                    break;
+
+                case 3:
+                    System.out.print("Enter value to search: ");
+                    value = sc.nextInt();
+                    if (tree.search(tree.root, value))
+                        System.out.println("Value found!");
+                    else
+                        System.out.println("Value not found!");
+                    break;
+
+                case 4:
+                    System.out.print("Inorder: ");
+                    tree.inorder(tree.root);
+                    System.out.println();
+                    break;
+
+                case 5:
+                    System.out.print("Preorder: ");
+                    tree.preorder(tree.root);
+                    System.out.println();
+                    break;
+
+                case 6:
+                    System.out.print("Postorder: ");
+                    tree.postorder(tree.root);
+                    System.out.println();
+                    break;
+
+                case 7:
+                    System.out.println("Exiting...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice!");
+            }
+
+        } while (choice != 7);
+
+        sc.close();
+    }
+}
